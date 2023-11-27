@@ -4,6 +4,13 @@ const handleBars = require('express-handlebars');
 const path = require('path');
 const route = require('./routes');
 
+const db = require('./config/db');
+
+//Connect to DB
+const databaseUrl = 'mongodb://localhost:27017/testFormDb';
+db.connect(databaseUrl);
+
+
 const app = express();
 const port = 3000;
 
@@ -13,7 +20,7 @@ app.use(morgan('combined'));
 //Setup view engine with handlebars
 app.engine('handlebars', handleBars.engine());
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'resource\\views'));
+app.set('views', path.join(__dirname, 'resource', 'views'));
 
 //Setup SASS
 app.use(express.static(path.join(__dirname, 'public')));
@@ -31,5 +38,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 route(app);
 
 app.listen(port, () => {
-    console.log(`Example app listening on http://localhost:${port}/`);
+    console.log(`App listening on http://localhost:${port}/`);
 });
