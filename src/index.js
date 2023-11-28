@@ -9,8 +9,8 @@ const session = require('express-session');
 const db = require('./config/db');
 
 //Connect to DB
-// const databaseUrl = 'mongodb+srv://vmtriet21:vmtriet21@ptudweb-ga02.dbulhp7.mongodb.net/PTUDWEB-GA02';
-const databaseUrl = 'mongodb://127.0.0.1:27017/testFormDb';
+const databaseUrl = 'mongodb+srv://vmtriet21:vmtriet21@ptudweb-ga02.dbulhp7.mongodb.net/PTUDWEB-GA02';
+// const databaseUrl = 'mongodb://127.0.0.1:27017/testFormDb';
 db.connect(databaseUrl);
 
 
