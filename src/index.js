@@ -6,9 +6,11 @@ const route = require('./routes');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
+const flash    = require('connect-flash');
+
 
 // pass passport for configuration
-require('./config/passport')(passport);
+require('./config/passport/passport')(passport);
 
 const db = require('./config/db');
 //Connect to DB
