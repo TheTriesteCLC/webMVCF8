@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const { multipleMongooseToObject } = require('../../util/mongoose')
 const {mongooseToObject} = require('../../util/mongoose')
-const authenticator = require('../../config/passport/passport')
+// const authenticator = require('../../config/passport/passport')
 
 class userController {
     //[GET] /user/:slug
@@ -15,9 +15,9 @@ class userController {
 
 
     //[GET] /user/login
-    // login(req, res, next){
-    //     res.render('users/login');
-    // }
+    login(req, res, next){
+        res.render('users/login');
+    }
 
     //[POST] /user/login
     login(req, res, next){
@@ -26,7 +26,7 @@ class userController {
         
         passport.authenticate('local-login', {
             successRedirect : '/protected', // redirect to the secure profile section
-            failureRedirect : '/login', // redirect back to the signup page if there is an error
+            failureRedirect : '/user/login', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         })
     }
