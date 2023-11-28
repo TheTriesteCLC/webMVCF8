@@ -7,7 +7,7 @@ const route = require('./routes');
 const db = require('./config/db');
 
 //Connect to DB
-const databaseUrl = 'mongodb://localhost:27017/testFormDb';
+const databaseUrl = 'mongodb+srv://vmtriet21:vmtriet21@ptudweb-ga02.dbulhp7.mongodb.net/PTUDWEB-GA02';
 db.connect(databaseUrl);
 
 

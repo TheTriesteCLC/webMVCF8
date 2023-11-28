@@ -1,15 +1,20 @@
 const User = require('../models/User');
 const { multipleMongooseToObject } = require('../../util/mongoose')
-const {mongooseToObject} = require('../../util/mongoose')
+const { mongooseToObject } = require('../../util/mongoose')
 
 class userController {
     //[GET] /user/:slug
     show(req, res, next) {
-        User.findOne({slug: req.params.slug})
+        User.findOne({ slug: req.params.slug })
             .then((user) => {
-                res.render('users/show', {user: mongooseToObject(user)})
+                res.render('users/show', { user: mongooseToObject(user) })
             })
             .catch(next)
+    }
+
+    //[GET] /user/log-in
+    login(req, res, next) {
+        res.render('users/login');
     }
 
     //[GET] /user/sign-up
