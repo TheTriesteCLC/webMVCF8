@@ -1,8 +1,11 @@
 <h1>HOME PAGE</h1>
+<a href="/user/sign-up"> 
+    <p>Sign-up</p>
+</a>
 <ul>
     {{#each users}}
     <li>
-        <h2>{{this.username}}</h2>
+        <a href="/user/{{this.slug}}"><h2>{{this.username}}</h2></a>
         <h2>{{this.password}}</h2>
     </li>
     {{/each}}
