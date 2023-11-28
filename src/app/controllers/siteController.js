@@ -8,7 +8,7 @@ class siteController {
             .then(users => {
                 res.render('home', { users: multipleMongooseToObject(users) });
             })
-            .catch(error => next(error));
+            // .catch(error => next(error));
     }
 
 

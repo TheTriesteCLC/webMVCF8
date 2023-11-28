@@ -14,7 +14,7 @@ require('./config/passport/passport')(passport);
 
 const db = require('./config/db');
 //Connect to DB
-const databaseUrl = 'mongodb://localhost:27017/testFormDb';
+const databaseUrl = 'mongodb://127.0.0.1:27017/testFormDb';
 db.connect(databaseUrl);
 
 const app = express();
