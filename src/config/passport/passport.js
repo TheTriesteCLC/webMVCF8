@@ -36,45 +36,35 @@ module.exports = function(passport) {
         usernameField : 'username',
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
-    },
-    function(req, username, password, done) {
+    }, async (req, username, password, done) => {
 
         // asynchronous
-        // User.findOne wont fire unless data is sent back
-        process.nextTick(function() {
 
         // find a user whose username is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ 'local.username' :  username }, function(err, user) {
-            // if there are any errors, return the error
-            if (err)
-                return done(err);
+        var user = await User.findOne({ 'username' :  username });
+        // if there are any errors, return the error
 
-            // check to see if theres already a user with that username
-            if (user) {
-                return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-            } else {
+        // check to see if theres already a user with that username
+        if (user) {
+            return done(null, false);
+        } else {
 
-                // if there is no user with that username
-                // create the user
-                var newUser            = new User();
+            // if there is no user with that username
+            // create the user
+            var newUser = new User();
 
-                // set the user's local credentials
-                newUser.local.username    = username;
-                newUser.local.password = newUser.generateHash(password);
+            // set the user's local credentials
+            newUser.username = username;
+            newUser.password = password;
+            newUser.slug = 'user-' + username;
 
-                // save the user
-                newUser.save(function(err) {
-                    if (err)
-                        throw err;
-                    return done(null, newUser);
-                });
-            }
+            // save the user
+            newUser.save();
 
-        });
-
-        });
-
+            // User.create({username: username, password: password});
+            console.log('created')
+        }
     }));
 
     // =========================================================================
@@ -89,27 +79,25 @@ module.exports = function(passport) {
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, username, password, done) { // callback with email and password from our form
-
+    async (req, username, password, done) => { // callback with email and password from our form
+        console.log('proccessing');
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ 'local.username' :  username }, function(err, user) {
-            // if there are any errors, return the error before anything else
-            if (err)
-                return done(err);
+        var user = await User.findOne({ 'username' :  username });
+        console.log('ok');
+        // if no user is found, return the message
+        if (!user)
+            return done(null, false); // req.flash is the way to set flashdata using connect-flash
 
-            // if no user is found, return the message
-            if (!user)
-                return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+        // if the user is found but the password is wrong
+        var checkPass = await user.comparePassword(password);
+        console.log('passed')
+        if (!checkPass)
+            return done(null, false); // create the loginMessage and save it to session as flashdata
 
-            // if the user is found but the password is wrong
-            if (!user.validPassword(password))
-                return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
-
-            // all is well, return successful user
-            return done(null, user);
-        });
-
+        // all is well, return successful user
+        console.log('success');
+        console.log(user);
+        return done(null, user);
     }));
-
 }
