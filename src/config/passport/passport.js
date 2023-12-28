@@ -67,24 +67,25 @@ module.exports = function(passport) {
 
         // check to see if theres already a user with that username
         if (user) {
+            // return done(null, user);
             return done(null, false);
-        } else {
+        } 
 
-            // if there is no user with that username
-            // create the user
-            var newUser = new User();
+        // if there is no user with that username
+        // create the user
+        var newUser = new User();
 
-            // set the user's local credentials
-            newUser.username = username;
-            newUser.password = password;
-            newUser.slug = 'user-' + username;
+        // set the user's local credentials
+        newUser.username = username;
+        newUser.password = password;
+        newUser.slug = 'user-' + username;
 
-            // save the user
-            newUser.save();
+        // save the user
+        newUser.save();
 
-            // User.create({username: username, password: password});
-            console.log('created')
-        }
+        // User.create({username: username, password: password});
+        console.log('created');
+        return done(null, user);
     }));
 
     // =========================================================================
@@ -98,8 +99,7 @@ module.exports = function(passport) {
         usernameField : 'username',
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
-    },
-    async (req, username, password, done) => { // callback with email and password from our form
+    }, async (req, username, password, done) => { // callback with email and password from our form
         console.log('proccessing');
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
