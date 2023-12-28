@@ -4,6 +4,8 @@ var LocalStrategy   = require('passport-local').Strategy;
 // load up the user model
 var User            = require('../../app/models/User');
 
+const bcrypt = require('bcrypt'); 
+
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -38,8 +40,8 @@ module.exports = function(passport) {
           if (err) {
             throw err;
           }
-       });
-      });
+        });
+    });
 
     // passport.deserializeUser(function(obj, cb) {
     //     cb(null, obj);
@@ -77,7 +79,10 @@ module.exports = function(passport) {
 
         // set the user's local credentials
         newUser.username = username;
-        newUser.password = password;
+        console.log('Hashing');
+        const hashedPassword = await bcrypt.hash(password, 7);
+        console.log('Hashing done');
+        newUser.password = hashedPassword;
         newUser.slug = 'user-' + username;
 
         // save the user
@@ -85,7 +90,7 @@ module.exports = function(passport) {
 
         // User.create({username: username, password: password});
         console.log('created');
-        return done(null, user);
+        return done(null, newUser);
     }));
 
     // =========================================================================

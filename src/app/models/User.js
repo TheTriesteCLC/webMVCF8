@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
@@ -21,8 +21,8 @@ User.statics = {
 
 User.methods = {
     comparePassword(password) {
-    //   return bcrypt.compare(password, this.password);
-        return password === this.password;
+      return bcrypt.compare(password, this.password);
+        // return password === this.password;
     }
 }
 
