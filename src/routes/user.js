@@ -5,62 +5,99 @@ require('../config/passport/passport')(passport);
 const User = require('../app/models/User');
 const { multipleMongooseToObject } = require('../util/mongoose')
 const {mongooseToObject} = require('../util/mongoose')
+const userController = require('../app/controllers/userController');
 
-router.get('/sign-up', function(req, res, next){
-    res.render('users/signup');
-});
-
-
-router.get('/login', function(req, res, next){
-    res.render('users/login');
-});
-
-
-router.post('/store',
-    passport.authenticate('local-signup', {
-        successRedirect : './login', 
-        failureRedirect : './sign-up'
-    })
-);
+router.get('/signup', userController.signup);
+router.post('/signup', 
+passport.authenticate('local-signup', { failureRedirect : './signup'}), 
+function(req,res){
+    console.log("redirecting");
+    res.redirect('./protected');
+}, userController.signupPost);
 
 
-router.get('/protected', isLoggedIn, function(req, res, next){
-    res.render('users/protected');
-});
+router.get('/login', userController.login);
+router.post('/login', 
+passport.authenticate('local-login', { failureRedirect : './login'}), 
+function(req,res){
+    console.log("redirecting");
+    res.redirect('./protected');
+}, userController.loginPost);
 
 
-router.post('/logingin', passport.authenticate('local-login', {
-    successRedirect : './protected', // redirect to the secure profile section
-    failureRedirect : './login'// redirect back to the signup page if there is an error
-}), function(err, req,res,next){
-    console.log(err);
-});
+router.use('/protected', isLoggedIn, userController.protected);
+router.get('/logout', isLoggedIn, userController.logout);
 
 
-router.get('/:slug', function(req, res, next){
-    User.findOne({slug: req.params.slug})
-    .then((user) => {
-        res.render('users/show', {user: mongooseToObject(user)})
-    })
-    .catch(next)
-});
+router.get('/:slug', userController.show);
 
 
-router.get('/logout', function(req, res){
-    req.logout();
-    res.redirect('user/login');
-});
+// router.get('/signup', function(req, res, next){
+//     res.render('users/signup');
+//     // userController.signup();
+// });
+
+
+// router.post('/store',
+//     passport.authenticate('local-signup', {
+//         successRedirect : './login', 
+//         failureRedirect : './sign-up'
+//     })
+// );
+
+
+// router.get('/protected', isLoggedIn, function(req, res, next){
+//     res.render('users/protected');
+// });
+
+
+// router.get('/login', function(req, res, next){
+//     res.render('users/login');
+// });
+
+
+// router.post('/login', 
+//     passport.authenticate('local-login', {
+//     failureRedirect : './login'
+// }), function(req,res){
+//     console.log("redirecting");
+//     res.redirect('/user/protected');
+// });
+
+
+// router.get('/logout', isLoggedIn, function(req, res){ // they made it post
+//     console.log("Loging out");
+//     req.logout(function(err) {
+//         // res.clearCookie('connect.sid');  // clear the cookie
+//         if (err) { return next(err); }
+//         res.redirect('./login');
+//         // req.session.destroy(function (err) { // destroys the session
+// 		// 	res.send();
+// 		// });
+//     });
+// });
+
+// router.get('/:slug', function(req, res, next){
+//     User.findOne({slug: req.params.slug})
+//     .then((user) => {
+//         res.render('users/show', {user: mongooseToObject(user)})
+//     })
+//     .catch(next)
+// });
+
 
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
     // if user is authenticated in the session, carry on
+    console.log("Authenticate checking");
     if (req.isAuthenticated()){
         console.log('is authenticated');
         return next();
     }
 
     // if they aren't redirect them to the home page
+    console.log("user is not authenticated");
     res.redirect('/user/login');
 }
 

@@ -2,6 +2,8 @@ const User = require('../models/User');
 const { multipleMongooseToObject } = require('../../util/mongoose')
 const {mongooseToObject} = require('../../util/mongoose')
 const passport = require('passport');
+const express = require('express');
+const app = express();
 require('../../config/passport/passport')(passport);
 
 class userController {
@@ -21,15 +23,9 @@ class userController {
     }
 
     // [POST] /user/logingin
-    logingin(req, res, next){
-        // authenticator.checkNotAuthenticated
-        passport.authenticate('local-login', {
-            successRedirect : 'user/protected', // redirect to the secure profile section
-            failureRedirect : 'user/login', // redirect back to the signup page if there is an error
-            failureFlash : true // allow flash messages
-        });
-    }
-
+    loginPost(req, res, next) {
+        
+    } 
 
     //[GET] /user/sign-up
     signup(req, res, next) {
@@ -38,18 +34,7 @@ class userController {
 
 
     //[POST] /user/store
-    store(req, res, next) {
-        const formData = req.body;
-        formData.slug = 'user-' + formData.username;
-        const user = new User(formData);
-        user.save();
-        res.send("Create new user !!!");
-
-        passport.authenticate('local-signup', {
-            successRedirect : 'user/login', // redirect to the login section
-            failureRedirect : 'user/signup', // redirect back to the signup page if there is an error
-            failureFlash : true // allow flash messages
-        })
+    signupPost(req, res, next) {
     }
 
 
@@ -58,11 +43,17 @@ class userController {
         res.render('users/protected');
     }
 
-
     //[GET] /user/logout
     logout(req, res, next){
-        req.logout();
-        res.redirect('user/login');
+        console.log("Loging out");
+        req.logout(function(err) {
+        // res.clearCookie('connect.sid');  // clear the cookie
+        if (err) { return next(err); }
+        res.redirect('./login');
+        // req.session.destroy(function (err) { // destroys the session
+		// 	res.send();
+		// });
+    });
     }
 
 }
