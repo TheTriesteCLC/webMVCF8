@@ -15,15 +15,35 @@ module.exports = function(passport) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
+        console.log("Serializing");
+
         done(null, user.username);
     });
 
     // used to deserialize the user
+    // passport.deserializeUser(async function(username, done) {
+    //     console.log("Authenticated, deserializing");
+    //     user = await User.findByUsername(username, function(err, user) {                       
+    //         done(err, user);
+    //     });
+    //     console.log(user);
+    //     console.log("Deseralized");
+        
+    // });
     passport.deserializeUser(function(username, done) {
-        User.findByUsername(username, function(err, user) {
-            done(err, user);
-        });
-    });
+        User.findByUsername(username).then(function(user) {
+          console.log('deserializing user:',user);
+          done(null, user);
+        }).catch(function(err) {
+          if (err) {
+            throw err;
+          }
+       });
+      });
+
+    // passport.deserializeUser(function(obj, cb) {
+    //     cb(null, obj);
+    //     });
 
     // =========================================================================
     // LOCAL SIGNUP ============================================================
@@ -97,7 +117,8 @@ module.exports = function(passport) {
 
         // all is well, return successful user
         console.log('success');
-        console.log(user);
         return done(null, user);
     }));
+
+    
 }
